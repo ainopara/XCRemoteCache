@@ -69,6 +69,9 @@ public struct SwiftcContext {
 
         let srcRoot: URL = URL(fileURLWithPath: config.sourceRoot)
         let remoteCommitLocation = URL(fileURLWithPath: config.remoteCommitFile, relativeTo: srcRoot)
+        defaultLog("srcRoot: \(config.sourceRoot)")
+        defaultLog("remoteCommitFile: \(config.remoteCommitFile)")
+        defaultLog("remoteCommitLocation: \(remoteCommitLocation)")
         prebuildDependenciesPath = config.prebuildDiscoveryPath
         switch config.mode {
         case .consumer:

@@ -73,7 +73,7 @@ public class XCPostbuild {
                 envs: env,
                 customMappings: config.outOfBandMappings
             )
-            let envFingerprint = try EnvironmentFingerprintGenerator(
+            let (envFingerprint, envRawValues) = try EnvironmentFingerprintGenerator(
                 configuration: config,
                 env: env,
                 generator: FingerprintAccumulatorImpl(algorithm: MD5Algorithm(), fileManager: fileManager)
@@ -283,7 +283,8 @@ public class XCPostbuild {
             case (.producer, _, _), (.producerFast, _, _):
                 // Generate artifacts and upload to the remote server for a reference sha
                 let referenceCommit = try config.publishingSha ?? gitClient.getCurrentSha()
-                try postbuildAction.performBuildUpload(for: referenceCommit)
+                printToUser("ReferenceCommit: \(referenceCommit) PublishingSha: \(String(describing: config.publishingSha))")
+                try postbuildAction.performBuildUpload(for: referenceCommit, fingerprintRawValues: envRawValues)
             default:
                 // Consumer does not upload anything
                 break

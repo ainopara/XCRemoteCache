@@ -145,7 +145,7 @@ class Postbuild {
     }
 
     /// Builds an artifact package and uploads it to the remote server
-    public func performBuildUpload(for commit: String) throws {
+    public func performBuildUpload(for commit: String, fingerprintRawValues: [[String]]) throws {
         let dependencies = try generateDependencies()
         let localFingerprint = try generateFingerprint(dependencies)
         // Filekey has to be unique for the context to not mix builds Debug/Release, iphonesimulator/iphoneos etc
@@ -165,7 +165,8 @@ class Postbuild {
             platform: context.platform,
             xcode: context.xcodeBuildNumber,
             inputs: [],
-            pluginsKeys: [:]
+            pluginsKeys: [:],
+            environments: fingerprintRawValues
         )
         meta = try creatorPlugins.reduce(meta) { prevMeta, plugin in
             var meta = prevMeta

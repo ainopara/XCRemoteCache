@@ -73,6 +73,7 @@ public class XCSwiftc {
             config = try XCRemoteCacheConfigReader(srcRootPath: srcRoot.path, fileReader: fileManager)
                 .readConfiguration()
             context = try SwiftcContext(config: config, input: inputArgs)
+            updateProcessTag(inputArgs.moduleName)
         } catch {
             exit(1, "FATAL: Swiftc initialization failed with error: \(error)")
         }

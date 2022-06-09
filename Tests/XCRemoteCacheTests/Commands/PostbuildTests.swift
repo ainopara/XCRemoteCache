@@ -221,7 +221,7 @@ class PostbuildTests: FileXCTestCase {
             consumerPlugins: []
         )
 
-        try postbuild.performBuildUpload(for: "1")
+        try postbuild.performBuildUpload(for: "1", fingerprintRawValues: [])
 
         XCTAssertTrue(fileManager.fileExists(atPath: dSYMInDerivedData.path))
     }
@@ -374,7 +374,7 @@ class PostbuildTests: FileXCTestCase {
             consumerPlugins: []
         )
 
-        try postbuild.performBuildUpload(for: "1")
+        try postbuild.performBuildUpload(for: "1", fingerprintRawValues: [])
 
         let readData = try network.fetch(.meta(commit: "1"))
         let readMeta = try JSONDecoder().decode(MainArtifactMeta.self, from: readData)
@@ -406,7 +406,7 @@ class PostbuildTests: FileXCTestCase {
             consumerPlugins: []
         )
 
-        try postbuild.performBuildUpload(for: "1")
+        try postbuild.performBuildUpload(for: "1", fingerprintRawValues: [])
 
         let readData = try network.fetch(.artifact(id: "artifact-Extra"))
         XCTAssertEqual(readData, Data([1]))

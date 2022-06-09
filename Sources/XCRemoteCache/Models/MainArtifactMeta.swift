@@ -42,4 +42,6 @@ struct MainArtifactMeta: Meta, Equatable {
     var inputs: [String]
     /// Extra keys added by meta plugins
     var pluginsKeys: [String: String]
+
+    var environments: [[String]]?
 }

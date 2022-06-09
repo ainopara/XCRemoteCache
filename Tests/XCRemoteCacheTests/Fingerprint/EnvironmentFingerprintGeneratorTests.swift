@@ -60,13 +60,13 @@ class EnvironmentFingerprintGeneratorTests: XCTestCase {
     func testConsidersDefaultEnvs() throws {
         let fingerprint = try fingerprintGenerator.generateFingerprint()
 
-        XCTAssertEqual(fingerprint, "GCC,YES,TARGET,CONG,PLAT,XC,1,2,3,4,AR,\(Self.currentVersion)")
+        XCTAssertEqual(fingerprint.0, "GCC,YES,TARGET,CONG,PLAT,XC,1,2,3,4,AR,\(Self.currentVersion)")
     }
 
     func testFingerprintIncludesVersionAsLastComponent() throws {
         let fingerprint = try fingerprintGenerator.generateFingerprint()
 
-        XCTAssertTrue(fingerprint.hasSuffix(",\(Self.currentVersion)"))
+        XCTAssertTrue(fingerprint.0.hasSuffix(",\(Self.currentVersion)"))
     }
 
     func testMissedEnvAppendsEmptyStringToGenerator() throws {
@@ -78,7 +78,7 @@ class EnvironmentFingerprintGeneratorTests: XCTestCase {
 
         let fingerprint = try fingerprintGenerator.generateFingerprint()
 
-        XCTAssertEqual(fingerprint, ",,,,,,,,,,,\(Self.currentVersion)")
+        XCTAssertEqual(fingerprint.0, ",,,,,,,,,,,\(Self.currentVersion)")
     }
 
     func testConsidersCustomEnvs() throws {
@@ -94,13 +94,13 @@ class EnvironmentFingerprintGeneratorTests: XCTestCase {
 
         let fingerprint = try fingerprintGenerator.generateFingerprint()
 
-        XCTAssertEqual(fingerprint, "GCC,YES,TARGET,CONG,PLAT,XC,1,2,3,4,AR,CUSTOM_VALUE,\(Self.currentVersion)")
+        XCTAssertEqual(fingerprint.0, "GCC,YES,TARGET,CONG,PLAT,XC,1,2,3,4,AR,CUSTOM_VALUE,\(Self.currentVersion)")
     }
 
     func testFingerprintIsGeneratedOnce() throws {
         let fingerprint1 = try fingerprintGenerator.generateFingerprint()
         let fingerprint2 = try fingerprintGenerator.generateFingerprint()
-        XCTAssertEqual(fingerprint1, fingerprint2)
+        XCTAssertEqual(fingerprint1.0, fingerprint2.0)
         XCTAssertEqual(generatorFake.generateCallsCount, 1)
     }
 }

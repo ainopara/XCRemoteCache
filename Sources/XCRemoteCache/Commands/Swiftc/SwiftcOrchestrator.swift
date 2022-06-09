@@ -104,6 +104,7 @@ class SwiftcOrchestrator {
                     // we are responsible to call all gathered compilation steps in compilation history
                     let historyCommandsToCall = try invocationStorage.retrieveAll()
                     try callExternalInvocations(invocations: historyCommandsToCall)
+                    defaultLog("Force fallback")
                     fallbackToDefault(command: swiftcCommand)
                 } else {
                     // save the current compilation invocation to the history file
@@ -112,9 +113,11 @@ class SwiftcOrchestrator {
             } catch {
                 // The critical section is protected by a lock. Some other process already called compilation history
                 // We only need to call our current step then
+                defaultLog("Failed to call external invocation with error: \(error)")
                 fallbackToDefault(command: swiftcCommand)
             }
         case .consumer:
+            defaultLog("Remote commoit unavailable as consumer")
             fallbackToDefault(command: swiftcCommand)
         case .producerFast:
             let compileStepResult = try swiftc.mockCompilation()

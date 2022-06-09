@@ -37,7 +37,7 @@ class EnvironmentFingerprintGenerator {
     private let customFingerprintEnvs: [String]
     private let env: [String: String]
     private let generator: FingerprintAccumulator
-    private var generatedFingerprint: RawFingerprint?
+    private var generatedFingerprint: (RawFingerprint, [[String]])?
 
     init(configuration: XCRemoteCacheConfig, env: [String: String], generator: FingerprintAccumulator) {
         self.generator = generator
@@ -46,13 +46,14 @@ class EnvironmentFingerprintGenerator {
         version = configuration.schemaVersion
     }
 
-    func generateFingerprint() throws -> RawFingerprint {
+    func generateFingerprint() throws -> (RawFingerprint, [[String]]) {
         if let fingerprint = generatedFingerprint {
             return fingerprint
         }
-        try fill(envKeys: Self.defaultEnvFingerprintKeys + customFingerprintEnvs)
+        let envKeys = Self.defaultEnvFingerprintKeys + customFingerprintEnvs
+        try fill(envKeys: envKeys)
         try generator.append(version)
-        let result = try generator.generate()
+        let result = try (generator.generate(), envKeys.map({ [$0, env.readEnv(key: $0) ?? ""] }))
         generatedFingerprint = result
         return result
     }
@@ -61,6 +62,7 @@ class EnvironmentFingerprintGenerator {
     private func fill(envKeys keys: [String]) throws {
         for key in keys {
             let value = env.readEnv(key: key) ?? ""
+            infoLog("Environment fingerprint filling \(key): \(value)")
             try generator.append(value)
         }
     }

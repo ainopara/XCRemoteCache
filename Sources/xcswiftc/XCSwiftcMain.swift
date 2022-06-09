@@ -61,7 +61,7 @@ public class XCSwiftcMain {
             let swiftFileListInput = swiftFileList
             else {
             let swiftcCommand = "swiftc"
-            print("Fallbacking to compilation using \(swiftcCommand).")
+            print("Fallbacking to compilation using \(swiftcCommand) for args: \(args).")
 
             let args = ProcessInfo().arguments
             let paramList = [swiftcCommand] + args.dropFirst()

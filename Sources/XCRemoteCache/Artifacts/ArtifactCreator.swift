@@ -97,12 +97,16 @@ class BuildArtifactCreator: ArtifactSwiftProductsBuilderImpl, ArtifactCreator {
         let generatedObjCURL = buildingArtifactObjCHeadersLocation()
         if fileManager.fileExists(atPath: generatedObjCURL.path) {
             artifacts.append(generatedObjCURL)
+        } else {
+            defaultLog("Missing ObjC header at \(generatedObjCURL.path)")
         }
 
         // Add optional directory with generated .swiftmodule files
         let generatedSwiftModuleURL = buildingArtifactSwiftModulesLocation()
         if fileManager.fileExists(atPath: generatedSwiftModuleURL.path) {
             artifacts.append(generatedSwiftModuleURL)
+        } else {
+            defaultLog("Missing ObjC header at \(generatedSwiftModuleURL.path)")
         }
         return artifacts
     }

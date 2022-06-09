@@ -83,7 +83,7 @@ public class XCSwiftcMain {
     }
     private func executeFallback() -> Never {
         let swiftcCommand = "swiftc"
-        print("Fallbacking to compilation using \(swiftcCommand).")
+        print("Fallbacking to compilation using \(swiftcCommand) for args: \(ProcessInfo().arguments).")
 
         let args = ProcessInfo().arguments
         let paramList = [swiftcCommand] + args.dropFirst()

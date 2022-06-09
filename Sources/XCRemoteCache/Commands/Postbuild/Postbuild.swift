@@ -145,7 +145,7 @@ class Postbuild {
     }
 
     /// Builds an artifact package and uploads it to the remote server
-    public func performBuildUpload(for commit: String) throws {
+    public func performBuildUpload(for commit: String, fingerprintRawValues: [[String]]) throws {
         let dependencies = try generateDependencies()
         let localFingerprint = try generateFingerprint(dependencies)
         // Filekey has to be unique for the context to not mix builds Debug/Release, iphonesimulator/iphoneos etc
@@ -155,6 +155,25 @@ class Postbuild {
         let remapper = DependenciesRemapperComposite(remappers)
         let abstractFingerprintFiles = try remapper.replace(localPaths: dependencies.map(\.path))
         // TODO: use `inputs` read by dependenciesReader
+
+        let hashAlgorithm = MD5Algorithm()
+        var fileHashs = [[String]]()
+        for (index, dependency) in dependencies.enumerated() {
+            guard let data = FileManager.default.contents(atPath: dependency.path) else {
+                fileHashs.append([
+                    abstractFingerprintFiles[index],
+                    "<missing>"
+                ])
+                continue
+            }
+            hashAlgorithm.reset()
+            hashAlgorithm.add(data)
+            fileHashs.append([
+                abstractFingerprintFiles[index],
+                hashAlgorithm.finalizeString()
+            ])
+        }
+
         var meta = MainArtifactMeta(
             dependencies: abstractFingerprintFiles,
             fileKey: fileKey,
@@ -165,7 +184,9 @@ class Postbuild {
             platform: context.platform,
             xcode: context.xcodeBuildNumber,
             inputs: [],
-            pluginsKeys: [:]
+            pluginsKeys: [:],
+            environments: fingerprintRawValues,
+            fileHashs: fileHashs
         )
         meta = try creatorPlugins.reduce(meta) { prevMeta, plugin in
             var meta = prevMeta

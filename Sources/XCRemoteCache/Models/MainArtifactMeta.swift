@@ -42,4 +42,9 @@ struct MainArtifactMeta: Meta, Equatable {
     var inputs: [String]
     /// Extra keys added by meta plugins
     var pluginsKeys: [String: String]
+
+    /// List of environment key-values for debug cache miss issues
+    var environments: [[String]]?
+    /// List of dependency name and it's hashs for debug cache miss issues
+    var fileHashs: [[String]]?
 }

@@ -84,7 +84,7 @@ public class XCPrebuild {
             fileManager: fileManager
         )
         do {
-            let envFingerprint = try EnvironmentFingerprintGenerator(
+            let (envFingerprint, envRawValues) = try EnvironmentFingerprintGenerator(
                 configuration: config,
                 env: env,
                 generator: FingerprintAccumulatorImpl(algorithm: MD5Algorithm(), fileManager: fileManager)

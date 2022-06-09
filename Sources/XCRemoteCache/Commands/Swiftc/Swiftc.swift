@@ -195,7 +195,7 @@ class Swiftc: SwiftcProtocol {
         if let wmoDeps = allCompilations.info.dependencies {
             try cachedDependenciesWriterFactory.generate(output: wmoDeps)
         }
-        infoLog("Swiftc noop for \(context.target)")
+        infoLog("Swiftc noop for \(context.moduleName)")
         return .success
     }
 }

@@ -1,6 +1,7 @@
 name: release_binaries
 on:
-  workflow_dispatch:
+  release:
+    types: created
 jobs:
   macOS:
     name: Add macOS binaries to release

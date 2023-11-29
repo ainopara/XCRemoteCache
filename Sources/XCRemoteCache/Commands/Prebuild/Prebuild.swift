@@ -71,17 +71,24 @@ class Prebuild {
                 genericPaths: meta.dependencies
             ).map(URL.init(fileURLWithPath:))
             let localFingerprint = try generateFingerprint(for: localDependencies)
-            let md5 = MD5Algorithm()
             for (index, localDependency) in localDependencies.enumerated() {
                 guard let data = FileManager.default.contents(atPath: localDependency.path) else {
                     infoLog("Missing md5 for path \(localDependency.path)")
                     continue
                 }
-                md5.reset()
-                md5.add(data)
-                let hash = md5.finalizeString()
-                if hash != meta.fileHashs![index][1] {
-                    infoLog("mismatch file hash \(hash) != \(meta.fileHashs![index][1]) for \(meta.fileHashs![index][0])")
+                
+                if
+                    let fileHashes = meta.fileHashs,
+                    fileHashes.count > index,
+                    fileHashes[index].count > 1
+                {
+                    let md5 = MD5Algorithm()
+                    md5.add(data)
+                    let hash = md5.finalizeString()
+                    let hashInfo = fileHashes[index]
+                    if hash != hashInfo[1] {
+                        infoLog("mismatch file hash \(hash) != \(hashInfo[1]) for \(hashInfo[0])")
+                    }
                 }
             }
             if localFingerprint.raw != meta.rawFingerprint {
